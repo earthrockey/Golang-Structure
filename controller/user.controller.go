@@ -17,7 +17,11 @@ func GetAllUser(e echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 	var user []model.User
-	db.First(&user)
+	db.Find(&user)
+	for i := range user {
+		db.Model(&user[i]).Related(&user[i].Book)
+		db.Model(&user[i]).Association("Achievement").Find(&user[i].Achievement)
+	}
 	return e.JSON(http.StatusCreated, user)
 }
 
@@ -33,6 +37,8 @@ func GetIDUser(e echo.Context) error {
 	if user.Username == "" {
 		return echo.NewHTTPError(400, "id not found")
 	}
+	db.Model(&user).Related(&user.Book)
+	db.Model(&user).Related(&user.Achievement)
 	return e.JSON(http.StatusCreated, user)
 }
 

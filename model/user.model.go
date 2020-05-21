@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type UserRequest struct {
 	Username string `json:"username"`
@@ -8,10 +10,9 @@ type UserRequest struct {
 }
 
 type User struct {
-	ID        uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
-	Username  string `json:"username"`
-	Password  string `json:"password"`
+	gorm.Model
+	Username    string        `json:"username"`
+	Password    string        `json:"password"`
+	Book        []Book        `json:"book"`
+	Achievement []Achievement `json:"achievement" gorm:"many2many:user_achievements;"`
 }

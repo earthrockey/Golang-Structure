@@ -33,6 +33,6 @@ func CreateTable() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.User{}, &model.Book{}, &model.Achievement{})
 
 }
