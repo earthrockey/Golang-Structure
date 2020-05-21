@@ -5,8 +5,9 @@ import (
 )
 
 type UserRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username      string `json:"username"`
+	Password      string `json:"password"`
+	AchievementID []uint `json:"achievement_id"`
 }
 
 type User struct {

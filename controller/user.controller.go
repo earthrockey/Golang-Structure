@@ -38,7 +38,7 @@ func GetIDUser(e echo.Context) error {
 		return echo.NewHTTPError(400, "id not found")
 	}
 	db.Model(&user).Related(&user.Book)
-	db.Model(&user).Related(&user.Achievement)
+	db.Model(&user).Association("Achievement").Find(&user.Achievement)
 	return e.JSON(http.StatusCreated, user)
 }
 
@@ -78,6 +78,11 @@ func EditUser(e echo.Context) error {
 	}
 	editUser.Username = req.Username
 	editUser.Password = req.Password
+	for _, value := range req.AchievementID {
+		var achievement model.Achievement
+		db.First(&achievement, value)
+		editUser.Achievement = append(editUser.Achievement, achievement)
+	}
 	db.Save(&editUser)
 	return e.JSON(http.StatusCreated, editUser)
 }
