@@ -7,6 +7,7 @@ import (
 	"github.com/earthrockey/Golang-Structure/config"
 	"github.com/earthrockey/Golang-Structure/model"
 	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUser(e echo.Context) error {
@@ -54,7 +55,11 @@ func CreateUser(e echo.Context) error {
 		fmt.Println(err)
 		return echo.ErrInternalServerError
 	}
-	newUser := model.User{Username: req.Username, Password: req.Password}
+	hashpass, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.MinCost)
+	if err != nil {
+		fmt.Println(err)
+	}
+	newUser := model.User{Username: req.Username, Password: string(hashpass)}
 	db.Create(&newUser)
 	return e.JSON(http.StatusCreated, newUser)
 }
@@ -77,7 +82,11 @@ func EditUser(e echo.Context) error {
 		return echo.NewHTTPError(400, "id not found")
 	}
 	editUser.Username = req.Username
-	editUser.Password = req.Password
+	hashpass, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.MinCost)
+	if err != nil {
+		fmt.Println(err)
+	}
+	editUser.Password = string(hashpass)
 	for _, value := range req.AchievementID {
 		var achievement model.Achievement
 		db.First(&achievement, value)

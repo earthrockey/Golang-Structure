@@ -16,7 +16,11 @@ func main() {
 	e.GET("/", controller.HomePage)
 
 	// Test
-	e.POST("/api/test/user", controller.TestCreateUser)
+	e.GET("/api/test", controller.TestAPI)
+
+	// Authentication
+	e.GET("/api/authentication/login", controller.Login)
+	e.GET("/api/authentication/check", controller.CheckAuthentication)
 
 	// User
 	e.GET("/api/user/:id", controller.GetIDUser)
